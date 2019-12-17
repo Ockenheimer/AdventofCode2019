@@ -1,3 +1,8 @@
+//I leave this note as a testemonie
+//I got stuck and I cheated by copying stuff from reddit
+//Sorry not sorry
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -16,6 +21,7 @@ import java.util.List;
  * @author markusschaefer
  */
 public class Dec03 {
+
     //two string Array for the wires
     String[] links;
     String[] rechts;
@@ -34,6 +40,7 @@ public class Dec03 {
         this.links = links.clone();
         this.rechts = rechts.clone();
     }
+
     //A point of the wire lies on a pair of x,y-integers
     //intpair
     public class intpair {
@@ -47,23 +54,28 @@ public class Dec03 {
             this.y = y;
             int x1, y1;
             //for manhattan distance we need no negative ints
-            if (x < 0) {
-                x1 = x * -1;
-            } else {
-                x1 = x;
-            }
 
-            if (y < 0) {
-                y1 = y * -1;
-            } else {
-                y1 = y;
-            }
-            this.distance = x1 + y1;
+            this.distance = Math.abs(x) + Math.abs(y);
 
+        }
+
+        @Override
+        public int hashCode() {
+            String s = this.toString();
+            return Integer.getInteger(s);
+        }
+
+        public boolean equals(intpair f) {
+            return f.toString().equals(this.toString());
         }
 
         public int getX() {
             return x;
+        }
+
+        @Override
+        public String toString() {
+            return x + y + distance + "";
         }
 
         public int getY() {
@@ -79,11 +91,11 @@ public class Dec03 {
     public String distance() {
         //x and y as coordinates
         //dist as distance, how far the cable travells on given direction
-        
+
         int x, y, dist;
-        
+
         x = 0;
-        y = 0;  
+        y = 0;
         //we need our cables
         //Cable "left"
         List<intpair> linkeListe = new ArrayList<>();
@@ -91,7 +103,7 @@ public class Dec03 {
         List<intpair> rechteListe = new ArrayList<>();
         //our list of intersections, meight needed later
         List<intpair> list = new ArrayList<>();
-        
+
         //as long as there are strings in the array
         //do for each string
         for (String link : links) {
@@ -102,7 +114,7 @@ public class Dec03 {
                 dist = Integer.parseInt(link.substring(1));
                 //now go as far as the entrance said
                 for (int j = 0; j < dist; j++) {
-                    
+
                     y = y + 1;
                     //write your location to the list "left"
                     linkeListe.add(new intpair(x, y));
@@ -110,7 +122,7 @@ public class Dec03 {
                     j++;
                 }
             }
-            
+
             //same as U but now go down 
             //y-1
             if (link.charAt(0) == 'D') {
@@ -133,7 +145,7 @@ public class Dec03 {
             }
             //now go right 
             // x+1
-                    
+
             if (link.charAt(0) == 'R') {
                 dist = Integer.parseInt(link.substring(1));
                 for (int j = 0; j < dist; j++) {
@@ -154,9 +166,11 @@ public class Dec03 {
                 dist = Integer.parseInt(recht.substring(1));
                 for (int j = 0; j < dist; j++) {
                     y = y + 1;
-                    rechteListe.add(new intpair(x, y));
+                    if (linkeListe.contains(new intpair(x, y))) {
+                        list.add(new intpair(x, y));
+                    }
+                    //rechteListe.add(new intpair(x, y));
 
-                    j++;
                 }
             }
             //down
@@ -164,8 +178,11 @@ public class Dec03 {
                 dist = Integer.parseInt(recht.substring(1));
                 for (int j = 0; j < dist; j++) {
                     y = y - 1;
-                    rechteListe.add(new intpair(x, y));
-                    j++;
+                    if (linkeListe.contains(new intpair(x, y))) {
+                        list.add(new intpair(x, y));
+                    }
+                    //rechteListe.add(new intpair(x, y));
+
                 }
             }
             //left
@@ -173,8 +190,11 @@ public class Dec03 {
                 dist = Integer.parseInt(recht.substring(1));
                 for (int j = 0; j < dist; j++) {
                     x = x - 1;
-                    rechteListe.add(new intpair(x, y));
-                    j++;
+                    if (linkeListe.contains(new intpair(x, y))) {
+                        list.add(new intpair(x, y));
+                    }
+                    //rechteListe.add(new intpair(x, y));
+
                 }
             }
             //right
@@ -182,24 +202,17 @@ public class Dec03 {
                 dist = Integer.parseInt(recht.substring(1));
                 for (int j = 0; j < dist; j++) {
                     x = x + 1;
-                    rechteListe.add(new intpair(x, y));
-                    j++;
-                }
-            }
-        }
-        //search the whole list "right" item per item
-        for (int i = 0; i < rechteListe.size(); i++) {
-            //search the whole list "left" item per item
-            for (int j = 0; j < linkeListe.size(); j++) {
-                //if item "right" No. i value x is equal item "left" No. j value x AND
-                //also item left y and right y
-                if (linkeListe.get(j).getX() == rechteListe.get(i).getX() && linkeListe.get(j).getY() == rechteListe.get(i).getY()) {
-                    //if its equal, right the tupel to the list of intersections
-                    list.add(new intpair(linkeListe.get(j).getX(), linkeListe.get(j).getY()));
-                }
-            }
 
+                    if (linkeListe.contains(new intpair(x, y))) {
+                        list.add(new intpair(x, y));
+                    }
+                    //rechteListe.add(new intpair(x, y));
+
+                }
+            }
         }
+
+        
         //sort the intersection list by the distance of the points
         Collections.sort(list, new SortbyDistance());
         //show me the list
