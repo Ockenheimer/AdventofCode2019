@@ -16,13 +16,13 @@ import java.util.List;
  * @author markusschaefer
  */
 public class Dec03 {
-
+    //two string Array for the wires
     String[] links;
     String[] rechts;
 
-    class Sortbyroll implements Comparator<intpair> {
+    class SortbyDistance implements Comparator<intpair> {
         // Used for sorting in ascending order of 
-        // roll number 
+        // distance 
 
         @Override
         public int compare(intpair a, intpair b) {
@@ -34,7 +34,8 @@ public class Dec03 {
         this.links = links.clone();
         this.rechts = rechts.clone();
     }
-
+    //A point of the wire lies on a pair of x,y-integers
+    //intpair
     public class intpair {
 
         public int x;
@@ -45,6 +46,7 @@ public class Dec03 {
             this.x = x;
             this.y = y;
             int x1, y1;
+            //for manhattan distance we need no negative ints
             if (x < 0) {
                 x1 = x * -1;
             } else {
@@ -75,24 +77,42 @@ public class Dec03 {
     }
 
     public String distance() {
+        //x and y as coordinates
+        //dist as distance, how far the cable travells on given direction
+        
         int x, y, dist;
+        
         x = 0;
-        y = 0;
-
+        y = 0;  
+        //we need our cables
+        //Cable "left"
         List<intpair> linkeListe = new ArrayList<>();
+        //cable "right"
         List<intpair> rechteListe = new ArrayList<>();
+        //our list of intersections, meight needed later
         List<intpair> list = new ArrayList<>();
-
+        
+        //as long as there are strings in the array
+        //do for each string
         for (String link : links) {
+            //the letter shows where to go
+            //U is up so y+1
             if (link.charAt(0) == 'U') {
+                //after the letter stands the distance
                 dist = Integer.parseInt(link.substring(1));
+                //now go as far as the entrance said
                 for (int j = 0; j < dist; j++) {
+                    
                     y = y + 1;
+                    //write your location to the list "left"
                     linkeListe.add(new intpair(x, y));
 
                     j++;
                 }
             }
+            
+            //same as U but now go down 
+            //y-1
             if (link.charAt(0) == 'D') {
                 dist = Integer.parseInt(link.substring(1));
                 for (int j = 0; j < dist; j++) {
@@ -101,6 +121,8 @@ public class Dec03 {
                     j++;
                 }
             }
+            //now go left
+            //x-1
             if (link.charAt(0) == 'L') {
                 dist = Integer.parseInt(link.substring(1));
                 for (int j = 0; j < dist; j++) {
@@ -109,6 +131,9 @@ public class Dec03 {
                     j++;
                 }
             }
+            //now go right 
+            // x+1
+                    
             if (link.charAt(0) == 'R') {
                 dist = Integer.parseInt(link.substring(1));
                 for (int j = 0; j < dist; j++) {
@@ -118,11 +143,13 @@ public class Dec03 {
                 }
             }
         }
-// und jetzt für rechts
-
+// now cable 2
+        //back to the root
         x = 0;
         y = 0;
+        //and off we go
         for (String recht : rechts) {
+            //up
             if (recht.charAt(0) == 'U') {
                 dist = Integer.parseInt(recht.substring(1));
                 for (int j = 0; j < dist; j++) {
@@ -132,6 +159,7 @@ public class Dec03 {
                     j++;
                 }
             }
+            //down
             if (recht.charAt(0) == 'D') {
                 dist = Integer.parseInt(recht.substring(1));
                 for (int j = 0; j < dist; j++) {
@@ -140,6 +168,7 @@ public class Dec03 {
                     j++;
                 }
             }
+            //left
             if (recht.charAt(0) == 'L') {
                 dist = Integer.parseInt(recht.substring(1));
                 for (int j = 0; j < dist; j++) {
@@ -148,6 +177,7 @@ public class Dec03 {
                     j++;
                 }
             }
+            //right
             if (recht.charAt(0) == 'R') {
                 dist = Integer.parseInt(recht.substring(1));
                 for (int j = 0; j < dist; j++) {
@@ -157,22 +187,28 @@ public class Dec03 {
                 }
             }
         }
-
+        //search the whole list "right" item per item
         for (int i = 0; i < rechteListe.size(); i++) {
+            //search the whole list "left" item per item
             for (int j = 0; j < linkeListe.size(); j++) {
+                //if item "right" No. i value x is equal item "left" No. j value x AND
+                //also item left y and right y
                 if (linkeListe.get(j).getX() == rechteListe.get(i).getX() && linkeListe.get(j).getY() == rechteListe.get(i).getY()) {
+                    //if its equal, right the tupel to the list of intersections
                     list.add(new intpair(linkeListe.get(j).getX(), linkeListe.get(j).getY()));
                 }
             }
 
         }
-        Collections.sort(list, new Sortbyroll());
+        //sort the intersection list by the distance of the points
+        Collections.sort(list, new SortbyDistance());
+        //show me the list
         System.out.println("x     y      dist");
         for (int i = 0; i < list.size(); i++) {
             System.out.println(list.get(i).getX() + " " + list.get(i).getY() + " " + list.get(i).getDistance());
 
         }
-
+        // return a String for the result
         //    return "Die Koordinaten mit der kleinesten Differenz: " + list.get(0).getDistance() + " mit den Werten X = " + list.get(0).getX() + "und Y = " + list.get(0).getY();
         return "affenschauckel";
     }
