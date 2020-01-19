@@ -62,7 +62,7 @@ public class Dec03 {
         @Override
         public int hashCode() {
             String s = this.toString();
-            return Integer.getInteger(s);
+            return Integer.parseInt(s);
         }
 
         public boolean equals(intpair f) {
